@@ -2,14 +2,15 @@ const express = require("express")
 require('dotenv').config()
 
 const Connect_Mongo = require('./Database/connect_Mongo')
+const authRouter = require('./routes/authRoute')
 
 const app = express()
 
 const port = process.env.PORT || 5000
 
-app.use("/", (req,res) =>{
-    res.send("Hello")
-})
+app.use(express.json())
+
+app.use('/api/v1/auth', authRouter)
 
 const Start = async () => {
     try {
