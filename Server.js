@@ -2,6 +2,8 @@ require('dotenv').config()
 require('express-async-errors')
 
 const express = require("express")
+const cookieParser = require('cookie-parser')
+const helmet = require('helmet')
 
 const Connect_Mongo = require('./Database/connect_Mongo')
 
@@ -11,6 +13,9 @@ const errorHanlder = require('./middleware/error_Hanlder')
 const authRouter = require('./routes/authRoute')
 
 const app = express()
+
+app.use(cookieParser(process.env.JWT_SECRET))
+app.use(helmet())
 
 const port = process.env.PORT || 5000
 
