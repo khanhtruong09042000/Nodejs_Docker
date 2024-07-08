@@ -8,7 +8,8 @@ const {
     isTokenValid,
     attachCookiesToRespose,
     createTokenUser,
-    createHash
+    createHash,
+    sendVerifiedMail
 } = require('../utils')
 
 const Register = async(req, res) => {
@@ -24,6 +25,14 @@ const Register = async(req, res) => {
 
     const newUser = await User.create({ 
         name, email, password, role, verificationToken
+    })
+
+    const origin = 'http://localhost:3000'
+    await sendVerifiedMail({
+        name: newUser.name,
+        email: newUser.email,
+        verificationToken: newUser.verificationToken,
+        origin
     })
 
     res.status(StatusCodes.CREATED).json({
@@ -74,7 +83,23 @@ const Login = async(req, res) => {
     res.status(StatusCodes.OK).json({user: tokenUser})
 }
 
+const Logout = async(req,res) =>{
+    await Token.findOneAndDelete({user: req.user.userId})
+
+    res.cookie('accessToken', 'logout', {
+        httpOnly: true,
+        expires: new Date(Date.now())
+    })
+
+    res.cookie('refreshToken', 'logout', {
+        httpOnly: true,
+        expires: new Date(Date.now())
+    })
+    res.status(StatusCodes.OK).json({msg: 'Logout Successfull!'})
+}
+
 module.exports = {
     Login,
-    Register
+    Register,
+    Logout
 }
