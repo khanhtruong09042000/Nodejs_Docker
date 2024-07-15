@@ -2,6 +2,7 @@ const {createJWT, isTokenValid, attachCookiesToRespose} = require('./jwt')
 const createTokenUser = require('./createTokenUser')
 const createHash = require('./createHash')
 const sendVerifiedMail = require('./sendVerifiedMail')
+const sendResetPasswordMail = require('./sendResetPasswordMail')
 
 module.exports = {
     createJWT,
@@ -9,5 +10,6 @@ module.exports = {
     attachCookiesToRespose,
     createTokenUser,
     createHash,
-    sendVerifiedMail
+    sendVerifiedMail,
+    sendResetPasswordMail
 }

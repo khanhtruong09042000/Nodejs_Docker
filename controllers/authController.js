@@ -9,7 +9,8 @@ const {
     attachCookiesToRespose,
     createTokenUser,
     createHash,
-    sendVerifiedMail
+    sendVerifiedMail,
+    sendResetPasswordMail
 } = require('../utils')
 
 const Register = async(req, res) => {
@@ -27,7 +28,7 @@ const Register = async(req, res) => {
         name, email, password, role, verificationToken
     })
 
-    const origin = 'http://localhost:3000'
+    const origin = process.env.HOST_NAME
     await sendVerifiedMail({
         name: newUser.name,
         email: newUser.email,
@@ -39,6 +40,23 @@ const Register = async(req, res) => {
         msg : "Success, created account!",
         user: newUser
     })
+}
+
+const verifyEmail = async(req,res)=>{
+    const {verificationToken, email} = req.body
+    const user = await User.findOne({email})
+    if(!user){
+        throw new CustomError.BadRequest('Verified Fail!')
+    }
+    if(user.verificationToken !== verificationToken){
+        throw new CustomError.BadRequest('Verified Fail!')
+    }
+    user.verified = new Date()
+    user.isVerified = true
+    user.verificationToken = ''
+
+    await user.save()
+    res.status(StatusCodes.OK).json({msg:"Email verified!"})
 }
 
 const Login = async(req, res) => {
@@ -98,8 +116,56 @@ const Logout = async(req,res) =>{
     res.status(StatusCodes.OK).json({msg: 'Logout Successfull!'})
 }
 
+const ForgotPassword = async(req,res) =>{
+    const {email} = req.body
+    if(!email){
+        throw new CustomError.BadRequest('Please provide valid email!')
+    }
+
+    const user = await User.findOne({email})
+    if(user){
+        const passwordToken = crypto.randomBytes(70).toString('hex')
+        const origin = process.env.HOST_NAME
+        await sendResetPasswordMail({
+            name: newUser.name,
+            email: newUser.email,
+            token: passwordToken,
+            origin
+        })
+
+        const tenMinutes = 1000 * 60 * 10
+        const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes)
+
+        user.passwordToken = createHash(passwordToken)
+        user.passwordTokenExpirationDate = passwordTokenExpirationDate
+        await user.save()
+    }
+    res.status(StatusCodes.OK).json({msg: "Please check your email!"})
+}
+
+const ResetPassword = async(req,res) =>{
+    const {token, email, password} = req.body
+    if(!token || !email || !password){
+        throw new CustomError.BadRequest('Please provide all values!')
+    }
+    const user = await User.findOne({email})
+    if(user){
+        const currentDate = new Date()
+        if(user.passwordToken === createHash(token) && user.passwordTokenExpirationDate > currentDate ){
+            user.password = password
+            user.passwordToken = null
+            user.passwordTokenExpirationDate = null
+        }
+        await user.save()
+    }
+    res.send('Reset password!')
+}
+
 module.exports = {
     Login,
     Register,
-    Logout
+    verifyEmail,
+    Logout, 
+    ForgotPassword,
+    ResetPassword
 }
