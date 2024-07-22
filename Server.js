@@ -11,6 +11,7 @@ const notFound = require('./middleware/not_Found')
 const errorHanlder = require('./middleware/error_Hanlder')
 
 const authRouter = require('./routes/authRoute')
+const userRouter = require('./routes/userRoute')
 
 const app = express()
 
@@ -22,6 +23,7 @@ const port = process.env.PORT || 5000
 app.use(express.json())
 
 app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/user', userRouter)
 
 app.use(notFound)
 app.use(errorHanlder) 

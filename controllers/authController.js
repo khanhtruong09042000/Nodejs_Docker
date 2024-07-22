@@ -74,6 +74,10 @@ const Login = async(req, res) => {
     if(!isCorrectPassword){
         throw new CustomError.Authenticadted("Invalid Credentinals!")
     }
+    
+    if(user.isVerified === 'false'){
+        throw new CustomError.Authenticadted("Please verified email!")
+    }
 
     const tokenUser = createTokenUser(user)
     

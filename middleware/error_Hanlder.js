@@ -5,6 +5,11 @@ const errorHanlder = (err, req, res, next) => {
         statusCode : err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
         msg: err.message || 'Server down!'
     }
+    
+    if(err.name === 'CastError'){
+        customError.statusCode = 404
+        customError.msg = `Not found id: ${err.value}`
+    }
 
     return res.status(customError.statusCode).json({msg: customError.msg})
 }
