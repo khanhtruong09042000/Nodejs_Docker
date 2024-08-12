@@ -35,14 +35,15 @@ const updateProduct = async(req,res) =>{
     res.status(StatusCodes.OK).json({product})
 }
 
-// const deleteProduct = async(req,res) =>{
-//     const {id} = req.params
-//     const product = await Product.findOne({_id: id})
-//     if(!product){
-//         throw new CustomError.NotFound(`No product with id: ${id}`)
-//     }
-
-// }
+const deleteProduct = async(req,res) =>{
+    const {id} = req.params
+    const product = await Product.findOne({_id: id})
+    if(!product){
+        throw new CustomError.NotFound(`No product with id: ${id}`)
+    }
+    await product.deleteOne()
+    res.status(StatusCodes.OK).json('Product removed successfully!')
+}
 
 const uploadImage = async(req,res) =>{
     if(!req.files){
@@ -68,5 +69,6 @@ module.exports = {
     getAllProducts,
     getProduct,
     updateProduct,
-    uploadImage
+    uploadImage,
+    deleteProduct
 }

@@ -14,6 +14,7 @@ const errorHanlder = require('./middleware/error_Hanlder')
 const authRouter = require('./routes/authRoute')
 const userRouter = require('./routes/userRoute')
 const productRouter = require('./routes/productRoute')
+const reviewRouter = require('./routes/reviewRoute')
 
 const app = express()
 
@@ -28,13 +29,14 @@ app.use(express.json())
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/user', userRouter)
 app.use('/api/v1/product', productRouter)
+app.use('/api/v1/review', reviewRouter)
 
 app.use(notFound)
 app.use(errorHanlder) 
 
 const Start = async () => {
     try {
-        await Connect_Mongo(process.env.URL)
+        await Connect_Mongo(process.env.URL_MONGO)
         app.listen(port, ()=>{
             console.log(`Server is running port: ${port}`)
         })
