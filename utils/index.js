@@ -4,6 +4,7 @@ const createHash = require('./createHash')
 const sendVerifiedMail = require('./sendVerifiedMail')
 const sendResetPasswordMail = require('./sendResetPasswordMail')
 const checkPermissions = require('./checkPermissions')
+const stripeAPI = require('./stripeAPI')
 
 module.exports = {
     createJWT,
@@ -13,5 +14,6 @@ module.exports = {
     createHash,
     sendVerifiedMail,
     sendResetPasswordMail,
-    checkPermissions
+    checkPermissions,
+    stripeAPI
 }

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const reviewSchema = mongoose.Schema({
+const reviewSchema = new mongoose.Schema({
     rating:{
         type: Number,
         min: 1,
@@ -62,7 +62,7 @@ reviewSchema.post('save', async function(){
     await this.constructor.calculateAverageRating(this.product)
 })
 
-reviewSchema.post('remove', async function(){
+reviewSchema.post('deleteOne', async function(){
     await this.constructor.calculateAverageRating(this.product)
 })
 
