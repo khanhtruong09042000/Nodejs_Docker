@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nodejs_docker_cm
+data:
+  URL_MONGO: mongodb+srv://KhanhTV:Khanh0904@atlascluster.v7vzpi8.mongodb.net/Nodejs_Docker?retryWrites=true&w=majority&appName=AtlasCluster
+  NODE_ENV: production
+  HOST_MAIL: smtp.gmail.com
+  PORT_MAIL: "587"
+  HOST_NAME: http://localhost:3000
+  CURRENCY: usd
+  USER_MAIL: Khanh09042000@gmail.com

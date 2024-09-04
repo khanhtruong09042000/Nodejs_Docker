@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs_docker_deployment
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: nodejs_docker
+  template:
+    metadata:
+      labels:
+        app: nodejs_docker
+    spec:
+      containers:
+      - name: nodejs_docker_app
+        image: khanh0904/nodejs_dockerapp:v1.1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000
+        envFrom: 
+          - configMapRef:
+              name: nodejs_docker_cm
+            secretRef: 
+              name: nodejs_docker_secret
